@@ -1,5 +1,7 @@
 ![OpenIPC Logo](https://cdn.themactep.com/images/logo_openipc.png)
 
+My fork to experiment with getting pan and tilt functions working for XM530
+
 microbe-web
 ===========
 
