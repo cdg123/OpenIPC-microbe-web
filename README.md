@@ -1,5 +1,8 @@
 ![OpenIPC Logo](https://cdn.themactep.com/images/logo_openipc.png)
 
+Vary much work in progress as tidying up files and remaking from sandpit code currently
+
+
 My fork to get pan and tilt functions working for XM530
 ===========================================================================
 
