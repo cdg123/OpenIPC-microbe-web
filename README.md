@@ -1,6 +1,35 @@
 ![OpenIPC Logo](https://cdn.themactep.com/images/logo_openipc.png)
 
 My fork to experiment with getting pan and tilt functions working for XM530
+===========================================================================
+
+As I had a small number of XM530 IP Cameras the only issue I had to using 
+them in our site cctv coverage was that the pan and tilt functionilty had not
+yet been implemented.
+
+Luckily the building blocks are all there and so it was challenge accepted for 
+me to learn about the existing code, javascript, css and server side coding with Ash.
+
+This is very much focussed on my need to get Pan and Tilt working with the XM530 cameras
+I have and so I hope by sharing it then it will be of some use to others who may find 
+some elements of use.
+
+I don't pretend to be an expert in CSS, Javascript etc. but have enough knowledge to have
+bolted something together which works for me. There are my notes in the code which I hope
+helps anyone trying to read it my approach and again I am sure there are better more
+experienced people out there that can improve on my initial attempts. 
+
+
+General Approach
+================
+
+
+
+
+
+
+
+
 
 microbe-web
 ===========
