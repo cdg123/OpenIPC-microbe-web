@@ -10,7 +10,7 @@ within this OpenIPC software
 
 Luckily I found the building blocks are all there and so it was challenge accepted for 
 me to learn about the existing code, javascript, css and server side coding with 
-a minimlist version of Bash.
+a minimlist version of Bash. (Ash I believe).
 
 This project is very much focussed on my need to get Pan and Tilt working with
 the XM530 cameras I have and so I hope by sharing it then it will be of some use 
