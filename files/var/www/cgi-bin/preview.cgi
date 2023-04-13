@@ -70,7 +70,7 @@ size_h=${size#*x}
       </div>
     </div>
     <div class="alert alert-danger small">
-      PTZ feature is not ready. Please consider <a href="https://t.me/OpenIPC">supporting further development</a>.
+      Insert our PTZ stuff here
     </div>
   </div>
 </div>

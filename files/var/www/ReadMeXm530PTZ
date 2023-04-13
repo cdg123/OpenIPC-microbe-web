@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="no-store" name="cache-control">
+<title>OpenIPC - XM530 Pan Tilt Sandpit</title>
+</head>
+<body>
+    <p>This is a simple test page to allow testing of the forked repo for the web Gui that is cloned 
+        to my local dev pc.
+    </p>
+</body>
+</html>
