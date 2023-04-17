@@ -1,7 +1,5 @@
 ![OpenIPC Logo](https://cdn.themactep.com/images/logo_openipc.png)
 
-This is my working copy to add Pan and Tilt functions for XM530 cam
-
 microbe-web
 ===========
 
