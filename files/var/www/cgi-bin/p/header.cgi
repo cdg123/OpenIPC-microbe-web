@@ -11,20 +11,16 @@ Pragma: no-cache
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><% html_title %></title>
-<link rel="stylesheet" href="/a/bootstrap.css">
+<link rel="stylesheet" href="/a/bootstrap.min.css">
 <link rel="stylesheet" href="/a/bootstrap.override.css">
-<script src="/a/bootstrap.js"></script>
+<script src="/a/bootstrap.bundle.min.js"></script>
 <script src="/a/main.js"></script>
 </head>
 
 <body id="page-<%= $pagename %>" class="<%= $fw_variant %> <%= ${webui_level:-user} %><% [ "$debug" -ge "1" ] && echo -n " debug" %>">
-  <nav class="navbar navbar-expand-lg bg-primary">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container">
-      <a class="navbar-brand" href="status.cgi"><img alt="Image: OpenIPC logo" height="32" src="/a/logo.svg">
-        <span class="x-small"><%= $fw_variant %></span></a>
-      <% if [ -n "$soc_temp" ]; then %>
-        <span id="soc-temp" class="text-primary bg-white rounded small" title="<%= $tSoCTemp %>"><%= $soc_temp %>°C</span>
-      <% fi %>
+      <a class="navbar-brand" href="status.cgi"><img alt="Image: OpenIPC logo" height="32" src="/a/logo.svg"><span class="x-small ms-1"><%= $fw_variant %></span></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -38,6 +34,8 @@ Pragma: no-cache
               <li><a class="dropdown-item" href="info-dmesg.cgi">Diagnostic messages</a></li>
               <li><a class="dropdown-item" href="info-httpd.cgi">HTTPd environment</a></li>
               <li><a class="dropdown-item" href="info-modules.cgi">Modules</a></li>
+              <li><a class="dropdown-item" href="info-proc-umap.cgi">Information from /proc/umap</a></li>
+              <li><a class="dropdown-item" href="info-ipctool.cgi">IPC Tool</a></li>
               <li><a class="dropdown-item" href="info-netstat.cgi">Network stats</a></li>
               <li><a class="dropdown-item" href="info-log.cgi">Log read</a></li>
               <li><a class="dropdown-item" href="info-overlay.cgi">Overlay partition</a></li>
@@ -54,11 +52,11 @@ Pragma: no-cache
             <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownSettings" role="button">Settings</a>
             <ul aria-labelledby="dropdownSettings" class="dropdown-menu">
               <li><a class="dropdown-item" href="network.cgi">Network</a></li>
-              <li><a class="dropdown-item" href="timezone.cgi">Timezone</a></li>
-              <li><a class="dropdown-item" href="network-ntp.cgi">Time Synchronization</a></li>
+              <li><a class="dropdown-item" href="time-config.cgi">Time</a></li>
               <li><a class="dropdown-item" href="network-socks5.cgi">SOCKS5 Proxy</a></li>
               <li><a class="dropdown-item" href="webui-settings.cgi">Web Interface</a></li>
               <li><a class="dropdown-item" href="admin.cgi">Admin Profile</a></li>
+              <li><a class="dropdown-item" href="users.cgi">Users</a></li>
               <li><a class="dropdown-item" href="debugging.cgi">Debugging</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="reset.cgi">Reset...</a></li>
@@ -121,12 +119,27 @@ unset _css; unset _param_domain; unset _line; unset _param_name; unset _paramete
 
   <main class="pb-4">
     <div class="container" style="min-height: 90vh">
-      <p class="text-end x-small mt-1"><%= $(signature) %></p>
-
+      <div class="row mt-1 x-small">
+        <div class="col-lg-2">
+          <div id="pb-memory" class="progress my-1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar"></div></div>
+          <div id="pb-overlay" class="progress my-1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar"></div></div>
+        </div>
+        <div class="col-md-7 mb-2">
+          <%= $(signature) %>
+        </div>
+        <div class="col-md-4 col-lg-3 mb-2 text-end">
+          <div id="time-now"></div>
+          <div id="soc-temp"></div>
+        </div>
+      </div>
 <% if [ -z "$network_gateway" ]; then %>
 <div class="alert alert-warning">
 <p class="mb-0">No Internet connection. Please <a href="network.cgi">check your network settings</a>.</p>
 </div>
+<% fi %>
+
+<% if [ "$network_macaddr" = "00:00:23:34:45:66" ]; then %>
+<%in p/mac-address.cgi %>
 <% fi %>
 
 <% if [ "true" = "$openwall_socks5_enabled" ] || [ "true" = "$telegram_socks5_enabled" ] || [ "true" = "$yadisk_socks5_enabled" ]; then

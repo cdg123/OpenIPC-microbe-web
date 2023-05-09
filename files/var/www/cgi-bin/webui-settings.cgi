@@ -16,14 +16,8 @@ if [ "POST" = "$REQUEST_METHOD" ]; then
   case "$POST_action" in
   access)
     new_password="$POST_ui_password_new"
-    [ -z "$new_password" ] && error="Password cannot be empty!"
-    [ "$ui_password_fw" = "$new_password" ] && error="You cannot use default password!"
-    [ -n "$(echo "$new_password" | grep " ")" ] && error="Password cannot have spaces!"
-    [ "5" -ge "${#new_password}" ] && error="Password cannot be shorter than 6 characters!"
+    [ -z "$new_password" ] && redirect_to $SCRIPT_NAME "danger" "Password cannot be empty!"
 
-    [ -n "$error" ] && redirect_to $SCRIPT_NAME "danger" "$error"
-
-    sed -i "s/:admin:.*/:admin:$(mkpasswd $new_password)/" /etc/httpd.conf
     echo "root:${new_password}" | chpasswd
     update_caminfo
 
@@ -77,7 +71,7 @@ fi
 page_title="Web Interface Settings"
 
 # data for form fields
-ui_username="admin"
+ui_username="$USER"
 ui_language="$locale"
 
 ui_locales="en|English"
@@ -98,7 +92,7 @@ fi
       <% field_hidden "action" "access" %>
       <p class="string">
         <label for="ui_username" class="form-label">Username</label>
-        <input type="text" id="ui_username" name="ui_username" value="admin" class="form-control" autocomplete="username" disabled>
+        <input type="text" id="ui_username" name="ui_username" value="<%= $ui_username %>" class="form-control" autocomplete="username" disabled>
       </p>
       <% field_password "ui_password_new" "Password" %>
       <% button_submit %>

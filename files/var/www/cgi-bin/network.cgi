@@ -8,6 +8,15 @@ tmp_file=/tmp/${plugin}.conf
 
 if [ "POST" = "$REQUEST_METHOD" ]; then
   case "$POST_action" in
+    changemac)
+      if echo "$POST_mac_address" | grep -Eiq '^([0-9a-f]{2}[:-]){5}([0-9a-f]{2})$'; then
+        fw_setenv ethaddr $POST_mac_address
+        update_caminfo
+        redirect_to "reboot.cgi"
+      else
+        redirect_back "warning" "${POST_mac_address} is as invalid MAC address."
+      fi
+      ;;
     reset)
       /usr/sbin/sysreset.sh -n
       redirect_back
@@ -86,7 +95,7 @@ fi
 
     <div class="alert alert-danger mt-4">
       <h5>Reset network configuration</h5>
-      <p>Restore config file bundled with firmware. Your changes to the default configuration will be lost.</p>
+      <p>Restore the config file bundled with firmware. All changes to the default configuration will be lost!</p>
       <form action="<%= $SCRIPT_NAME %>" method="post" enctype="multipart/form-data">
         <% field_hidden "action" "reset" %>
         <% button_submit "Reset config" "danger" %>

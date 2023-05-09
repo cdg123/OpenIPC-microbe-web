@@ -80,7 +80,7 @@ fi
 %>
 <%in p/header.cgi %>
 
-<ul class="nav bg-light small mb-4 d-none d-lg-flex">
+<ul class="nav small mb-4 d-none d-lg-flex">
 <%
 mj=$(echo "$mj" | sed "s/ /_/g")
 for _line in $mj; do
@@ -146,9 +146,11 @@ for line in $_mj2; do
   hint=${hint//_/ }                 # => From 1 to 500000.
 
   value="$(yaml-cli -g "$yaml_param_name")"
+# FIXME: this is not how it should be done. Instead, Majestic should be reporting its true values.
+# [ -z "$value" ] && value="$placeholder"
 
   # assign yaml_param_name's value to a variable with yaml_param_name's form_field_name for form fields values
-  eval "$form_field_name=\"$(yaml-cli -g "$yaml_param_name")\""
+  eval "$form_field_name=\"\$value\""
 
   # hide some params in config
   if [ "mj_netip_password_plain" != "$form_field_name" ]; then

@@ -44,6 +44,8 @@ body.debug:before {
     --bs-secondary: rgb(76, 96, 216);
     --bs-tertiary-bg-rgb: 76, 96, 216;
 }
+
+.navbar-nav,
 [data-bs-theme=light] .navbar-nav {
     --bs-nav-link-color: white;
 }
@@ -228,8 +230,6 @@ p.range span.show-value {
     /*border-radius: 5px;*/
 }
 
-pre#output { background: #111; color: #89a; }
-
 .ansi-30 { color: rgba(0, 0, 0, 0.8); }
 .ansi-31 { color: rgba(255, 0, 0, 0.8); }
 .ansi-32 { color: rgba(0, 128, 0, 0.8); }
@@ -275,3 +275,5 @@ body.expert .ui-expert { display: initial; }
     border-left: 5px solid green;
     margin-left: -5px;
 }
+
+#pb-memory, #pb-overlay { height: 4px; cursor: pointer; }

@@ -101,6 +101,16 @@ button_reset_firmware() {
   echo "</form>"
 }
 
+button_restore_from_rom() {
+  local file=$1
+  [ ! -f "/rom/${file}" ] && return
+  if [ -z "$(diff "/rom/${file}" "${file}")" ]; then
+    echo "<p class=\"small fst-italic\">File matches the version in ROM.</p>"
+    return
+  fi
+  echo "<p><a class=\"btn btn-danger\" href=\"restore.cgi?f=${file}\">Replace ${file} with its version from ROM</a></p>"
+}
+
 # button_submit "text" "type" "extras"
 button_submit() {
   local _t="$1"; [ -z "$_t" ] && _t="Save changes"
@@ -123,7 +133,7 @@ check_password() {
   _safepage="/cgi-bin/webui-settings.cgi"
   [ "0${debug}" -ge "1" ] && return
   [ -z "$REQUEST_URI" ] || [ "$REQUEST_URI" = "${_safepage}" ] && return
-  if [ -z "$ui_password" ] || [ "$ui_password_fw" = "$ui_password" ]; then
+  if [ ! -f /etc/shadow- ] || [ -z $(grep root /etc/shadow- | cut -d: -f2) ]; then
     redirect_to "${_safepage}" "danger" "You must set your own secure password!"
   fi
 }
@@ -135,7 +145,7 @@ e() {
 ex() {
   # NB! $() forks process and stalls output.
   echo "<div class=\"${2}\">"
-  echo "<h5># ${1}</h5><pre class=\"small\">"
+  echo "<h6># ${1}</h6><pre class=\"small\">"
   eval "$1" | sed "s/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g;s/\"/\&quot;/g"
   echo "</pre>"
   echo "</div>"
@@ -408,20 +418,25 @@ link_to() {
 }
 
 load_plugins() {
-  local _i
-  local _p
-  for _i in $(ls -1 plugin-*); do
-    _p="$(sed -r -n '/^plugin=/s/plugin="(.*)"/\1/p' $_i)"
-    # hide plugin if not supported
-    [ "$_p" = "mqtt" ] && [ ! -f /usr/bin/mosquitto_pub ] && continue
-    [ "$_p" = "telegrambot" ] && [ ! -f /usr/bin/jsonfilter ] && continue
-    [ "$_p" = "zerotier" ] && [ ! -f /usr/sbin/zerotier-cli ] && continue
+  local i
+  local n
+  local p
+  for i in $(ls -1 plugin-*); do
+    # get plugin name
+    p="$(sed -r -n '/^plugin=/s/plugin="(.*)"/\1/p' $i)"
 
-    _n="$(sed -r -n '/^plugin_name=/s/plugin_name="(.*)"/\1/p' $_i)"
-    eval _e=\$${_p}_enabled
-    [ "true" = "$_e" ] && _css=" plugin-enabled"
-    echo "<li><a class=\"dropdown-item${_css}\" href=\"${_i}\">${_n}</a></li>"
-    unset _e; unset _n; unset _p; unset _css
+    # hide unsupported plugins
+    [ "$p" = "mqtt"        ] && [ ! -f /usr/bin/mosquitto_pub ] && continue
+    [ "$p" = "telegrambot" ] && [ ! -f /usr/bin/jsonfilter    ] && continue
+    [ "$p" = "zerotier"    ] && [ ! -f /usr/sbin/zerotier-cli ] && continue
+
+    # get plugin description
+    n="$(sed -r -n '/^plugin_name=/s/plugin_name="(.*)"/\1/p' $i)"
+
+    # check if plugin is enabled
+    echo -n "<li><a class=\"dropdown-item"
+    grep -q "^${p}_enabled=\"true\"" ${ui_config_dir}/${p}.conf && echo -n " plugin-enabled"
+    echo "\" href=\"${i}\">${n}</a></li>"
   done
 }
 
@@ -487,7 +502,7 @@ async function updatePreview() {
 }
 
 const l = document.location;
-const pimg = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '')  + '/image.jpg';
+const pimg = '/cgi-bin/image.cgi';
 const jpg = new Image();
 jpg.addEventListener('load', async function() {
   await sleep(${refresh_rate} * 1000);
@@ -503,10 +518,10 @@ calculatePreviewSize();
 }
 
 progressbar() {
-  local _c="primary"
-  [ "$1" -ge "75" ] && _c="danger"
+  local c="primary"
+  [ "$1" -ge "75" ] && c="danger"
   echo "<div class=\"progress\" role=\"progressbar\" aria-valuenow=\"${1}\" aria-valuemin=\"0\" aria-valuemax=\"100\">" \
-    "<div class=\"progress-bar progress-bar-striped progress-bar-animated bg-${_c}\" style=\"width:${1}%\"></div>" \
+    "<div class=\"progress-bar progress-bar-striped progress-bar-animated bg-${c}\" style=\"width:${1}%\"></div>" \
     "</div>"
 }
 
@@ -623,7 +638,8 @@ t_label() {
 }
 
 t_value() {
-  eval "echo \"\$${1}\""
+  # eval "echo \"\$${1}\""
+  eval echo '$'${1}
 }
 
 update_caminfo() {
@@ -678,8 +694,7 @@ update_caminfo() {
 
   # WebUI version
   ui_version="bundled"; [ -f /var/www/.version ] && ui_version=$(cat /var/www/.version)
-  ui_password=$(grep admin /etc/httpd.conf|cut -d: -f3)
-  ui_password_fw=$(grep admin /rom/etc/httpd.conf|cut -d: -f3)
+  ui_password=$(grep root /etc/shadow|cut -d: -f2)
 
   # Network
   network_dhcp="false"
@@ -721,7 +736,7 @@ update_caminfo() {
 network_address network_cidr network_default_interface network_dhcp network_dns_1
 network_dns_2 network_gateway network_hostname network_interfaces network_macaddr network_netmask
 overlay_root mj_version soc soc_family soc_has_temp soc_vendor sensor sensor_ini tz_data tz_name
-ui_password ui_password_fw ui_version"
+ui_password ui_version"
   local v
   for _v in $_vars; do
     eval "echo ${_v}=\'\$${_v}\'>>${_tmpfile}"
@@ -793,6 +808,8 @@ include /etc/webui/webui.conf
 include /etc/webui/yadisk.conf
 
 # reload_locale
+
+# FIXME: mandatory password change disabled for testing purposes
 check_password
 get_soc_temp
 %>
