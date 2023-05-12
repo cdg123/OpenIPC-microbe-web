@@ -1,12 +1,13 @@
 #!/usr/bin/haserl
 <%in p/common.cgi %>
 <%
-page_title="Camera preview"
+page_title="Camera preview - cdg"
 
 size=$(yaml-cli -g .mjpeg.size); [ -z "$size" ] && size="640x480"
 size_w=${size%x*}
 size_h=${size#*x}
 %>
+
 <%in p/header.cgi %>
 
 <div class="row preview">
@@ -68,10 +69,14 @@ size_h=${size#*x}
           <a href="plugin-send2openwall.cgi" title="Open Wall settings"><img src="/a/gear.svg" alt="Gear"></a>
         </div>
       </div>
+
+      <!-- Include ptz script as seperate page to make easier to maintain in case preview.cgi is updated -->
+      <%in ptz-client.cgi %>
+
+      <div><hr class="dropdown-divider"></div>
     </div>
-    <div class="alert alert-danger small">
-      Insert our PTZ stuff here
-    </div>
+
+  <!-- this is end of right hand column -->
   </div>
 </div>
 
@@ -88,13 +93,6 @@ const network_address = "<%= $network_address %>";
 function reqListener(data) {
   console.log(data.responseText);
 }
-
-$$("a[id^=pan-],a[id^=zoom-]").forEach(el => {
-  el.addEventListener("click", event => {
-    event.preventDefault();
-    alert("Sorry, this feature does not work, yet!");
-  });
-});
 
 $("#toggle-night-mode")?.addEventListener("click", event => {
   event.preventDefault();
@@ -114,10 +112,6 @@ $$("button[data-sendto]").forEach(el => el.addEventListener("click", event => {
     xhr.send();
 }))
 
-$("#speed")?.addEventListener("click", event => {
-  event.preventDefault();
-  event.target.src = (event.target.src.split("/").pop() == "speed-slow.svg") ? "/a/speed-fast.svg" : "/a/speed-slow.svg";
-});
 </script>
 
 <%in p/footer.cgi %>
