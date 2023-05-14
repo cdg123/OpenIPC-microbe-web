@@ -71,7 +71,16 @@ size_h=${size#*x}
       </div>
 
       <!-- Include ptz script as seperate page to make easier to maintain in case preview.cgi is updated -->
-      <%in ptz-client.cgi %>
+      <!-- but only if this is running on xm530 -->
+
+      <div><% [ "xm530" =  "$soc" ] && echo "$soc $sensor_ini"%></div>
+      <% if [ "xm530" =  "$soc" ];
+      then 
+        echo "Cam matched to xm530 need to script how to include cgi or say not done yet msg"
+      fi %> 
+          
+      <%in ptz-client.cgi %> 
+
 
       <div><hr class="dropdown-divider"></div>
     </div>

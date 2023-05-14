@@ -119,14 +119,17 @@ ToDo: <ul>
 
 //runs on initial page load from eventlistener to ensure form elements exist
 window.addEventListener('load', (event) => {
+    //double check on page load that the kmotor module is loaded
+    //should only be a small overhead as other functionality is async
+    //so just when the page is fired first time.
 
+    alert("You don't appear to have the required motors.ko module loaded.")
      
     //set the default x,y params on screen
     document.getElementById('xpos').value=camX;
     document.getElementById('ypos').value=camY;
 
     //contact the camera to pull off the max X and max Y params using -i option in updated xm-kmotor
-    //console.log ("creating form ");
     const formData = new FormData();
 
     formData.append('ptzcmd', "ptzinit");
@@ -141,7 +144,7 @@ window.addEventListener('load', (event) => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
+      //console.log(data);
 
       //now keep the camera values to track for this session
       camX=data.xpos;
@@ -193,7 +196,7 @@ async function checkStatus(){
     
     console.log("getting status");
 
-    fetch("/cgi-bin/xm530-ptz-wrap.cgi", {
+    fetch("/cgi-bin/ptz-xm530-cmd.cgi", {
       method: "POST",
       body: payload,
     })

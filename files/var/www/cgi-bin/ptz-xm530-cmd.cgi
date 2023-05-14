@@ -30,25 +30,25 @@
 #         f (Scan, Y to set)
 #         g (Steps X and Y)
 
-ptz_action="/tmp/xm-kmotor-cdg" #default if not posted data from a form so probably not an ajax request or from cmd line
+ptz_action="xm-kmotor" #default if not posted data from a form so probably not an ajax request or from cmd line
 
 
 case "$FORM_ptzcmd" in
    ptzinit)
-   ptz_action="/tmp/xm-kmotor-cdg -i"  
+   ptz_action="xm-kmotor -i"  
    ;;
 
    ptzstatus)
-   ptz_action="/tmp/xm-kmotor-cdg -j"  
+   ptz_action="xm-kmotor -j"  
    ;;
 
    
    ptzgoto)
-   ptz_action="/tmp/xm-kmotor-cdg -d t -s $FORM_speed -x $FORM_xpos -y $FORM_ypos"
+   ptz_action="xm-kmotor -d t -s $FORM_speed -x $FORM_xpos -y $FORM_ypos"
    ;;
  
     ptzst) #stop
-    ptz_action="/tmp/xm-kmotor-cdg -d s"
+    ptz_action="xm-kmotor -d s"
     ;;
 
    ptzsu) #step up -d g -x0 -y10
@@ -56,7 +56,7 @@ case "$FORM_ptzcmd" in
     ;;
   
   ptzsul) #step up left **** how can we step in a negative way ?? Can workaround using goto x,y
-    ptz_action="/tmp/xm-kmotor-cdg -d s" #stop for now
+    ptz_action="xm-kmotor -d s" #stop for now
     ;;
 
   ptzsur) #step up right -d g -x10 -y10
@@ -64,19 +64,19 @@ case "$FORM_ptzcmd" in
     ;;
 
   ptzsl) #step left **** how can we step in a negative way ?? Can workaround using goto x,y
-    ptz_action="/tmp/xm-kmotor-cdg -d ss" #stop for now
+    ptz_action="xm-kmotor -d ss" #stop for now
     ;;
 
   ptzsr) #step right
-    ptz_action="/tmp/xm-kmotor-cdg -d s"
+    ptz_action="xm-kmotor -d s"
     ;;
 
 
   ptzsd) #step down **** how can we step in a negative way ?? Can workaround using goto x,y
-    ptz_action="/tmp/xm-kmotor-cdg -d s"
+    ptz_action="xm-kmotor -d s"
     ;;
   *)
-    ptz_action = "/tmp/xm-kmotor-cdg"
+    ptz_action = "xm-kmotor"
     ;;
 esac
 
@@ -87,7 +87,7 @@ result=$(eval $ptz_action)
 if [ "ptzinit" != "$FORM_ptzcmd" ]; then
   # if the action is not ptzinit then we need to get status
   # as camera could still be moving
-  ptz_action="/tmp/xm-kmotor-cdg -j"
+  ptz_action="xm-kmotor -j"
   result=$(eval $ptz_action)
 # 
 fi
