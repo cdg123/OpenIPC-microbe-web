@@ -86,9 +86,7 @@ fi
 Click and hold buttons to pan<br />
 ToDo: <ul>
 <li>Better error checking for </li>
-<li>How do we enable this? Need to check for this cam model and then display it ??</li>
-<li>Need to update the script so action is configurable could then be used to point to different camera wrapper etc.</li>
-<li>on page load event need to check kmotor module loaded else quit and alert user</li>
+<li>How do we enable this? Need to check for this cam model and then display it thinking standalone page with overlay</li>
 <li>Do we need any settings except enable/disable and where is this stored</li>
 <li>Fix duplicate and unneaded css in my css and tune layout</li>
 </ul>
@@ -123,8 +121,6 @@ window.addEventListener('load', (event) => {
     //should only be a small overhead as other functionality is async
     //so just when the page is fired first time.
 
-    alert("You don't appear to have the required motors.ko module loaded.")
-     
     //set the default x,y params on screen
     document.getElementById('xpos').value=camX;
     document.getElementById('ypos').value=camY;
