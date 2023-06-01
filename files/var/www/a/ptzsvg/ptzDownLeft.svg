@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="ptzbutton" viewBox="0 0 32 32"> 
+	<circle cx="16" cy="16" r="13" stroke="black" stroke-width="1" fill="rgb(76, 96, 216)" />
+	<path
+       id="ptzdl"
+       style="fill:#ffffff"
+       d="m 22.4,20.3 -0.0,-2.8 -7.9,-0.0 -0.0,-7.8 -2.8,-0.0 0.0,10.6 10.7,0.0 z" />
+</svg>
